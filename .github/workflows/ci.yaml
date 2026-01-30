@@ -1,4 +1,4 @@
-name: Devops-Project
+name: devops-project
 
 on:
   push:
@@ -20,10 +20,10 @@ jobs:
           echo "short_sha=$(echo ${GITHUB_SHA} | cut -c1-7)" >> $GITHUB_OUTPUT
       - name: Build Docker image
         run: |
-          docker build -t Bingbong-maker/Devops-Project:${{ steps.short_sha.outputs.short_sha }} .    
+          docker build -t Bingbong-maker/devops-project:${{ steps.short_sha.outputs.short_sha }} .    
       - name: Login to Dockerhub
         run: | 
           echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
       - name: Push to Dockerhub
         run: |
-          docker push Bingbong-maker/Devops-Project:${{ steps.short_sha.outputs.short_sha }}
+          docker push Bingbong-maker/devops-project:${{ steps.short_sha.outputs.short_sha }}
