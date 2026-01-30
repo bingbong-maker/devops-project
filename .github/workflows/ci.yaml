@@ -1,17 +1,27 @@
-name: Complete DevOps Project Pipeline
+name: Devops-Project
 
 on:
   push:
-     branches:
-          -main
-
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 jobs:
-    build_and_push:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@v2
-            - name: Set Short SHA
-              run: |
-                echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV\
-        -name: Build Docker Image
+  build_and_push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Set Short SHA
+        run: |
+          echo "SHORT_SHA=$(echo ${GITHUB_SHA} | cut -c1-7)" >> $GITHUB_ENV
+      - name: Build Docker image
+        run: |
+          docker build -t Bingbong-maker/Devops-Project:${{ env.SHORT_SHA }} .    
+      - name: Login to Dockerhub
+       run: | 
+          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+      - name: Push to Dockerhub
+        run: |
+          docker push Bingbong-maker/Devops-Project:${{ env.SHORT_SHA }}
